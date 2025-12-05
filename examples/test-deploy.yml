@@ -1,0 +1,95 @@
+name: Test and Deploy
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: Run Tests
+        run: vendor/bin/pest
+
+      - name: Run Static Analysis
+        run: vendor/bin/phpstan analyse
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install ZDT
+        run: composer global require veltix/zdt
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy to ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_KEY_PATH: ~/.ssh/deploy_key
+          DEPLOY_REPO_URL: https://github.com/${{ github.repository }}.git
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          DEPLOY_KEEP_RELEASES: ${{ github.ref == 'refs/heads/main' && '5' || '3' }}
+          DEPLOY_HEALTH_CHECK_ENABLED: true
+          DEPLOY_HEALTH_CHECK_URL: ${{ secrets.HEALTH_CHECK_URL }}
+          DEPLOY_NOTIFICATION_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          DEPLOY_HOOKS_AFTER_CLONE: |
+            composer install --no-dev --optimize-autoloader
+            npm ci --production
+          DEPLOY_HOOKS_BEFORE_ACTIVATE: |
+            npm run build
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+          DEPLOY_HOOKS_AFTER_ACTIVATE: |
+            php artisan queue:restart
+            php artisan optimize
+        run: zdt deploy
+
+      - name: Notify Deployment Success
+        if: success()
+        run: echo "Deployment to ${{ github.event.inputs.environment || 'production' }} succeeded!"
+
+      - name: Rollback on Failure
+        if: failure()
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_KEY_PATH: ~/.ssh/deploy_key
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: zdt rollback

@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install ZDT
+        run: composer global require veltix/zdt
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_KEY_PATH: ~/.ssh/deploy_key
+          DEPLOY_REPO_URL: https://github.com/${{ github.repository }}.git
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_BRANCH: ${{ github.ref_name }}
+          DEPLOY_HOOKS_AFTER_CLONE: |
+            composer install --no-dev --optimize-autoloader
+          DEPLOY_HOOKS_BEFORE_ACTIVATE: |
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+          DEPLOY_HOOKS_AFTER_ACTIVATE: |
+            php artisan queue:restart
+        run: zdt deploy

@@ -1,0 +1,55 @@
+{
+    "name": "veltix/zdt",
+    "description": "Zero Downtime Deployment Tool - Deploy your applications safely with GitHub Actions",
+    "keywords": ["deployment", "github-actions", "ci-cd", "zero-downtime", "laravel", "php"],
+    "homepage": "https://github.com/veltix/zdt",
+    "type": "project",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/veltix/zdt/issues",
+        "source": "https://github.com/veltix/zdt"
+    },
+    "authors": [
+        {
+            "name": "Veltix",
+            "email": "hello@veltix.sh"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "guzzlehttp/guzzle": "^7.10",
+        "illuminate/http": "^12.41",
+        "laravel-zero/framework": "^12.0.2",
+        "phpseclib/phpseclib": "^3.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.25.1",
+        "mockery/mockery": "^1.6.12",
+        "pestphp/pest": "^3.8.4|^4.1.2",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
+        "rector/rector": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "bin": ["zdt"]
+}
