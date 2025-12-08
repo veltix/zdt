@@ -347,7 +347,7 @@ test('accepts PHP version exactly at minimum', function () {
     );
     $this->ssh->setCommandResult(
         "php -r 'echo PHP_VERSION;'",
-        new CommandResult(0, '8.3.0', 'php')
+        new CommandResult(0, '8.2.0', 'php')
     );
     $this->ssh->setCommandResult(
         'which git',

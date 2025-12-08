@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-12-08
+
+### Changed
+- PHP requirement lowered to 8.2+
+
 ## [1.0.0] - 2024-12-05
 
 ### Added
@@ -42,5 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SSH connection management via phpseclib
 - PHP 8.3+ requirement
 
-[Unreleased]: https://github.com/veltix/zdt/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/veltix/zdt/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/veltix/zdt/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/veltix/zdt/releases/tag/v1.0.0

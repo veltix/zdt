@@ -44,7 +44,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -127,7 +127,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -175,7 +175,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -223,7 +223,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install Dependencies
         run: composer install
@@ -240,7 +240,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -299,7 +299,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -353,7 +353,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -403,7 +403,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -464,7 +464,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt
@@ -580,7 +580,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Install ZDT
         run: composer global require veltix/zdt

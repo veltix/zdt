@@ -88,7 +88,7 @@ final readonly class ValidateServerRequirements
         $version = mb_trim($result->output);
         $this->logger->debug("PHP version: {$version}");
 
-        return version_compare($version, '8.3.0', '>=');
+        return version_compare($version, '8.2.0', '>=');
     }
 
     private function checkGitAvailable(): bool

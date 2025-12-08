@@ -32,7 +32,6 @@ use App\Actions\ValidateRollbackTarget;
 use App\Actions\ValidateServerRequirements;
 use App\Actions\WarmCaches;
 use App\Contracts\SshConnectionContract;
-use App\ValueObjects\Release;
 use LaravelZero\Framework\Commands\Command;
 use Throwable;
 
@@ -134,7 +133,6 @@ final class DeployCommand extends Command
             $this->line("Commit: {$release->commitHash}");
             $this->newLine();
 
-            // 7. Sync Environment File
             $this->runTask('Syncing environment file', function () use ($syncEnv, $config, $release): void {
                 $syncEnv->handle($config, $release);
             });
@@ -153,38 +151,32 @@ final class DeployCommand extends Command
                 });
             }
 
-            // 11. Compile Assets
             if ($config->shouldUseNpm()) {
                 $this->runTask('Compiling assets', function () use ($compileAssets, $config, $release): void {
                     $compileAssets->handle($config, $release);
                 });
             }
 
-            // 12. Backup Database
             if ($config->shouldBackupDatabase()) {
                 $this->runTask('Backing up database', function () use ($backupDatabase, $config, $release): void {
                     $backupDatabase->handle($config, $release);
                 });
             }
 
-            // 13. Run Migrations
             if ($config->shouldRunMigrations()) {
                 $this->runTask('Running database migrations', function () use ($runMigrations, $config, $release): void {
                     $runMigrations->handle($config, $release);
                 });
             }
 
-            // 13. Optimize Application
             $this->runTask('Optimizing application', function () use ($optimize, $config, $release): void {
                 $optimize->handle($config, $release);
             });
 
-            // 14. Validate New Release
             $this->runTask('Validating new release', function () use ($validateRelease, $config, $release): void {
                 $validateRelease->handle($config, $release);
             });
 
-            // 15. Activate Release (ZERO DOWNTIME!)
             $this->runTask('Activating release', function () use ($updateSymlink, $config, $release): void {
                 $updateSymlink->handle($config, $release);
             });
@@ -196,17 +188,14 @@ final class DeployCommand extends Command
                 $performHealthCheck->handle($config, $release);
             });
 
-            // 15. Warm Caches
             $this->runTask('Warming caches', function () use ($warmCaches, $config, $release): void {
                 $warmCaches->handle($config, $release);
             });
 
-            // 16. Record Deployment
             $this->runTask('Recording deployment', function () use ($recordDeployment, $config, $release): void {
                 $recordDeployment->handle($config, $release);
             });
 
-            // 17. Cleanup Old Releases
             $this->runTask('Cleaning up old releases', function () use ($cleanup, $config): void {
                 $cleanup->handle($config);
             });
@@ -220,7 +209,6 @@ final class DeployCommand extends Command
             return self::SUCCESS;
         } catch (Throwable $e) {
             if ($release !== null && $config !== null) {
-                // We use try-catch here to ensure notification failure doesn't mask the original error
                 try {
                     $notify->handle($config, $release, 'failed', $e->getMessage());
                 } catch (Throwable $notifyError) {
@@ -232,7 +220,6 @@ final class DeployCommand extends Command
             $this->error('Deployment failed: '.$e->getMessage());
             $this->newLine();
 
-            // Attempt rollback if we have a release
             if ($release !== null && $this->confirm('Attempt automatic rollback?', true)) {
                 try {
                     $this->warn('Rolling back to previous release...');

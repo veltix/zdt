@@ -89,7 +89,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.2'
 
       - name: Deploy
         env:
@@ -503,7 +503,7 @@ Your deployment server needs:
 
 - **SSH access** with key-based authentication
 - **Git** installed
-- **PHP 8.3+** (for PHP applications)
+- **PHP 8.2+** (for PHP applications)
 - **Composer** (for PHP dependencies)
 - **Node.js & NPM** (for frontend builds)
 

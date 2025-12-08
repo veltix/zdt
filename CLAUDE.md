@@ -8,7 +8,7 @@ The Laravel Zero guidelines are specifically curated by Laravel Zero maintainers
 ## Foundational Context
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.3
+- php - 8.2
 - laravel-zero/framework (Laravel Zero) - v12
 - laravel/pint (PINT) - v1
 - pestphp/pest (PEST) - v4

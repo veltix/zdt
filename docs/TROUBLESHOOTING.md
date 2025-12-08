@@ -576,7 +576,7 @@ Before opening an issue, verify:
 
 - [ ] SSH key permissions are correct (600)
 - [ ] Server has enough disk space
-- [ ] PHP version meets requirements (8.3+)
+- [ ] PHP version meets requirements (8.2+)
 - [ ] Composer is installed and up to date
 - [ ] Git is installed
 - [ ] .env file exists in shared directory
