@@ -59,7 +59,7 @@ final readonly class BackupDatabase
 
         $command = "{$passwordArg} mysqldump -h {$host} -P {$port} -u {$username} --single-transaction --quick {$database} | gzip > {$backupFile}";
 
-        $result = $this->executor->execute($command, throwOnError: false);
+        $result = $this->executor->execute($command, throwOnError: false, timeout: $config->getBackupTimeout());
 
         if (! $result->isSuccessful()) {
             throw new DatabaseBackupException('MySQL backup failed: '.$result->output);
@@ -82,7 +82,7 @@ final readonly class BackupDatabase
 
         $command = "{$passwordEnv} pg_dump -h {$host} -p {$port} -U {$username} {$database} | gzip > {$backupFile}";
 
-        $result = $this->executor->execute($command, throwOnError: false);
+        $result = $this->executor->execute($command, throwOnError: false, timeout: $config->getBackupTimeout());
 
         if (! $result->isSuccessful()) {
             throw new DatabaseBackupException('PostgreSQL backup failed: '.$result->output);

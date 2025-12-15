@@ -195,3 +195,15 @@ test('getServerCredentials expands tilde in key path', function () {
 
     expect($credentials->keyPath)->toBe('/home/testuser/.ssh/id_rsa');
 });
+
+test('deployment config provides backup timeout', function () {
+    // Default
+    $config = DeploymentConfig::fromArray(require __DIR__.'/../../fixtures/deploy-config-valid.php');
+    expect($config->getBackupTimeout())->toBe(3600);
+
+    // Configured
+    $array = require __DIR__.'/../../fixtures/deploy-config-valid.php';
+    $array['database']['backup_timeout'] = 7200;
+    $config = DeploymentConfig::fromArray($array);
+    expect($config->getBackupTimeout())->toBe(7200);
+});

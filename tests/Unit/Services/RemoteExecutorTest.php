@@ -149,3 +149,17 @@ test('executeInDirectory throws on failure when throwOnError is true', function 
     expect(fn () => $this->executor->executeInDirectory('/var/www', 'fail'))
         ->toThrow(RemoteExecutionException::class);
 });
+
+test('execute passes timeout to ssh connection', function () {
+    $this->executor->execute('sleep 5', timeout: 3600);
+
+    expect($this->ssh->executedCommands)->toContain('sleep 5')
+        ->and($this->ssh->executedTimeouts)->toContain(3600);
+});
+
+test('executeWithRetry returns default failed result when maxAttempts is 0', function () {
+    $result = $this->executor->executeWithRetry('cmd', maxAttempts: 0, throwOnError: false);
+
+    expect($result->exitCode)->toBe(1)
+        ->and($this->ssh->executedCommands)->toBeEmpty();
+});

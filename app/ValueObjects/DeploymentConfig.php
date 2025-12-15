@@ -170,6 +170,11 @@ final readonly class DeploymentConfig
         return (int) ($this->database['keep_backups'] ?? 5);
     }
 
+    public function getBackupTimeout(): int
+    {
+        return (int) ($this->database['backup_timeout'] ?? 3600);
+    }
+
     public function getNotificationWebhook(): ?string
     {
         return $this->notifications['webhook_url'] ?? null;

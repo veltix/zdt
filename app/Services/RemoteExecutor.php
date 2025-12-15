@@ -16,11 +16,15 @@ final readonly class RemoteExecutor
         private LoggerInterface $logger,
     ) {}
 
-    public function execute(string $command, bool $throwOnError = true): CommandResult
+    public function execute(string $command, bool $throwOnError = true, ?int $timeout = null): CommandResult
     {
         $this->logger->debug("Executing: {$command}");
 
-        $result = $this->ssh->execute($command);
+        if ($timeout !== null) {
+            $result = $this->ssh->execute($command, $timeout);
+        } else {
+            $result = $this->ssh->execute($command);
+        }
 
         if ($throwOnError && $result->isFailed()) {
             throw new RemoteExecutionException(
@@ -35,7 +39,8 @@ final readonly class RemoteExecutor
         string $command,
         int $maxAttempts = 3,
         int $delaySeconds = 5,
-        bool $throwOnError = true
+        bool $throwOnError = true,
+        ?int $timeout = null
     ): CommandResult {
         $attempt = 0;
         $lastException = null;
@@ -44,7 +49,7 @@ final readonly class RemoteExecutor
             $attempt++;
 
             try {
-                $result = $this->execute($command, $throwOnError);
+                $result = $this->execute($command, $throwOnError, $timeout);
 
                 if ($result->isSuccessful() || ! $throwOnError) {
                     if ($attempt > 1) {
@@ -70,22 +75,30 @@ final readonly class RemoteExecutor
         if ($throwOnError && $lastException instanceof RemoteExecutionException) {
             throw $lastException;
         }
+
+        // Should not be reached if throwOnError is true and attempts exhausted
+        // But for static analysis / rigorous return:
+        return new CommandResult(1, '', $command);
     }
 
     /**
      * @param  array<int, string>  $commands
      */
-    public function executeMultiple(array $commands, bool $throwOnError = true): void
+    public function executeMultiple(array $commands, bool $throwOnError = true, ?int $timeout = null): void
     {
         foreach ($commands as $command) {
-            $this->execute($command, $throwOnError);
+            $this->execute($command, $throwOnError, $timeout);
         }
     }
 
-    public function executeInDirectory(string $directory, string $command, bool $throwOnError = true): CommandResult
-    {
+    public function executeInDirectory(
+        string $directory,
+        string $command,
+        bool $throwOnError = true,
+        ?int $timeout = null
+    ): CommandResult {
         $fullCommand = "cd {$directory} && {$command}";
 
-        return $this->execute($fullCommand, $throwOnError);
+        return $this->execute($fullCommand, $throwOnError, $timeout);
     }
 }

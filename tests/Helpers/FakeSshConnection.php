@@ -17,6 +17,9 @@ final class FakeSshConnection implements SshConnectionContract
     /** @var array<string, string> */
     public array $executedCommands = [];
 
+    /** @var array<int, int|null> */
+    public array $executedTimeouts = [];
+
     /** @var array<string, bool> */
     public array $files = [];
 
@@ -63,6 +66,7 @@ final class FakeSshConnection implements SshConnectionContract
         }
 
         $this->executedCommands[] = $command;
+        $this->executedTimeouts[] = $timeout;
 
         // Return pre-configured result if exists
         if (isset($this->commandResults[$command])) {
