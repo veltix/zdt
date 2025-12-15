@@ -43,6 +43,7 @@ test('connect successfully establishes SSH connection', function () {
         ->andReturn($this->sshMock);
 
     $this->sshMock->shouldReceive('setTimeout')->with(30)->once();
+    $this->sshMock->shouldReceive('setKeepAlive')->with(10)->once();
 
     $keyObject = new stdClass();
     $this->factoryMock->shouldReceive('loadKey')
@@ -66,6 +67,7 @@ test('connect successfully establishes SSH connection', function () {
 test('connect throws exception on login failure', function () {
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
 
     $this->sshMock->shouldReceive('login')->andReturn(false);
@@ -89,6 +91,7 @@ test('disconnect explicitly disconnects ssh and sftp', function () {
     // Setup connected state with both SSH and SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -115,6 +118,7 @@ test('upload logs error on failure', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -138,6 +142,7 @@ test('download logs error on failure', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -161,6 +166,7 @@ test('execute runs command successfully', function () {
     // Connect
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout')->with(30);
+    $this->sshMock->shouldReceive('setKeepAlive')->with(10);
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -191,6 +197,7 @@ test('upload transmits file successfully', function () {
     // Connect SSH first (implicitly or explicitly)
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -222,6 +229,7 @@ test('download transmits file successfully', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -248,6 +256,7 @@ test('fileExists checks via sftp', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -267,6 +276,7 @@ test('directoryExists checks via sftp', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
@@ -286,6 +296,7 @@ test('ensureSftpConnected throws exception on SFTP login failure', function () {
     // Connect SSH & SFTP
     $this->factoryMock->shouldReceive('createSSH2')->andReturn($this->sshMock);
     $this->sshMock->shouldReceive('setTimeout');
+    $this->sshMock->shouldReceive('setKeepAlive');
     $this->factoryMock->shouldReceive('loadKey')->andReturn(new stdClass());
     $this->sshMock->shouldReceive('login')->andReturn(true);
     $this->sshMock->shouldReceive('isConnected')->andReturn(true);
