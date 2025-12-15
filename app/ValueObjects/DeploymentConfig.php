@@ -107,7 +107,7 @@ final readonly class DeploymentConfig
 
     public function isHealthCheckEnabled(): bool
     {
-        return $this->healthCheck['enabled'] ?? true;
+        return $this->healthCheck['enabled'] ?? false;
     }
 
     public function getHealthCheckUrl(): ?string

@@ -253,10 +253,10 @@ zdt rollback
 zdt rollback --release=20231202-143000
 
 # List all releases
-zdt list-releases
+zdt releases:list
 
 # Clean up old releases (keep 3 most recent)
-zdt cleanup --keep=3
+zdt releases:cleanup --keep=3
 
 # Initialize deployment structure on server
 zdt deploy:init
@@ -388,7 +388,7 @@ env:
 **Example Slack Message:**
 ```
 🚀 Deployment started
-Release: 20231215-143000
+Release: 20231215143000
 Server: prod.example.com
 Branch: main
 ```

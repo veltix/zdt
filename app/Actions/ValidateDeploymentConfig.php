@@ -47,7 +47,7 @@ final readonly class ValidateDeploymentConfig
             'paths' => [
                 'deploy_to' => getenv('DEPLOY_PATH') ?: '/var/www/app',
             ],
-            'shared_paths' => [],
+            'shared_paths' => $this->parseSharedPaths(getenv('DEPLOY_SHARED_PATHS')),
             'options' => [
                 'keep_releases' => (int) (getenv('DEPLOY_KEEP_RELEASES') ?: 5),
                 'use_composer' => filter_var(getenv('DEPLOY_USE_COMPOSER') ?: 'true', FILTER_VALIDATE_BOOLEAN),
@@ -80,6 +80,35 @@ final readonly class ValidateDeploymentConfig
                 'webhook_url' => getenv('DEPLOY_NOTIFICATION_WEBHOOK') ?: null,
             ],
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function parseSharedPaths(string|false $paths): array
+    {
+        if (! $paths) {
+            return [];
+        }
+
+        $parsed = [];
+        $items = explode(',', $paths);
+
+        foreach ($items as $item) {
+            $item = mb_trim($item);
+            if (empty($item)) {
+                continue;
+            }
+
+            if (str_contains($item, ':')) {
+                [$source, $destination] = explode(':', $item, 2);
+                $parsed[mb_trim($source)] = mb_trim($destination);
+            } else {
+                $parsed[$item] = $item;
+            }
+        }
+
+        return $parsed;
     }
 
     /**
