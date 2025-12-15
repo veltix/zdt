@@ -31,27 +31,7 @@ final class PhpseclibSshConnection implements SshConnectionContract
         try {
             $this->ssh = $this->factory->createSSH2($this->credentials->host, $this->credentials->port);
             $this->ssh->setTimeout($this->credentials->timeout);
-
-            // Using file_get_contents inside here is still a pain for mocking if we don't mock filesystem.
-            // But we can assume tests will provide a readable path or we mock the "file_get_contents" part?
-            // Actually, the factory has loadKey which takes the CONTENT.
-            // We still need to get the content.
-            // For testing connectivity, we might want to mock the file reading too?
-            // Or just ensure the test fixture key exists.
-
-            // Let's rely on standard file_get_contents for now, assuming integration tests use real keys,
-            // or unit tests use a temp file.
-            // But wait, PhpseclibSshConnectionTest passes invalid paths.
-            // If I want to mock the KEY itself, I should probably also wrap file_get_contents or
-            // just accept that I need a real file for the test, OR allow passing key content to credentials?
-            // Credentials object has keyPath.
-
-            // To properly mock this, I'll use a protected method for reading file content?
-            // Class is final.
-
-            // Allow Factory to read file?
-            // "loadKey" in factory currently takes content.
-            // If I move file_get_contents to the factory as well? "loadKeyFromPath"?
+            $this->ssh->setKeepAlive(10);
 
             $keyContent = $this->getFileContents($this->credentials->keyPath);
             $key = $this->factory->loadKey($keyContent);
