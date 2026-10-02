@@ -156,3 +156,28 @@ test('clone repository executes before and after hooks', function () {
     expect($beforeHookFound)->toBeTrue('Before hook not executed');
     expect($afterHookFound)->toBeTrue('After hook not executed');
 });
+
+test('clones the configured branch, so after_clone hooks run against the tree being deployed', function () {
+    $ssh = new Tests\Helpers\FakeSshConnection;
+    $ssh->connect();
+    $config = new DeploymentConfig(
+        server: ['host' => 'test.com', 'username' => 'user'],
+        repository: ['url' => 'git@github.com:test/repo.git', 'branch' => 'staging'],
+        paths: ['deploy_to' => '/var/www/app'],
+        options: [],
+        hooks: ['after_clone' => ['bash deploy/hooks/build.sh']],
+        healthCheck: [],
+        sharedPaths: [],
+        database: [],
+        notifications: [],
+    );
+
+    (new CloneRepository(new RemoteExecutor($ssh, $this->logger), $this->logger))->handle($config, $this->release);
+
+    $clone = array_search("git clone --branch 'staging' git@github.com:test/repo.git /var/www/app/releases/20250101-120000", $ssh->executedCommands, true);
+    $hook = array_search('cd /var/www/app/releases/20250101-120000 && bash deploy/hooks/build.sh', $ssh->executedCommands, true);
+
+    expect($clone)->toBeInt()
+        ->and($hook)->toBeInt()
+        ->and($clone)->toBeLessThan($hook);
+});

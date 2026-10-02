@@ -35,7 +35,9 @@ final readonly class CloneRepository
             $this->executor->executeInDirectory($release->path, $hook);
         }
 
-        $this->executor->execute("git clone {$repositoryUrl} {$release->path}");
+        // Clone the deployed branch directly: after_clone hooks run before CheckoutBranch.
+        $branch = escapeshellarg($config->getBranch());
+        $this->executor->execute("git clone --branch {$branch} {$repositoryUrl} {$release->path}");
 
         $this->logger->info('Repository cloned successfully');
 
