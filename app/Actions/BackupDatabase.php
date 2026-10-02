@@ -57,7 +57,7 @@ final readonly class BackupDatabase
 
         $passwordArg = $password ? "MYSQL_PWD='{$password}'" : '';
 
-        $command = "{$passwordArg} mysqldump -h {$host} -P {$port} -u {$username} --single-transaction --quick {$database} | gzip > {$backupFile}";
+        $command = "set -o pipefail; {$passwordArg} mysqldump -h {$host} -P {$port} -u {$username} --single-transaction --quick {$database} | gzip > {$backupFile}";
 
         $result = $this->executor->execute($command, throwOnError: false, timeout: $config->getBackupTimeout());
 
@@ -80,7 +80,7 @@ final readonly class BackupDatabase
 
         $passwordEnv = $password ? "PGPASSWORD='{$password}'" : '';
 
-        $command = "{$passwordEnv} pg_dump -h {$host} -p {$port} -U {$username} {$database} | gzip > {$backupFile}";
+        $command = "set -o pipefail; {$passwordEnv} pg_dump -h {$host} -p {$port} -U {$username} {$database} | gzip > {$backupFile}";
 
         $result = $this->executor->execute($command, throwOnError: false, timeout: $config->getBackupTimeout());
 

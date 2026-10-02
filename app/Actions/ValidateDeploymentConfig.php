@@ -15,12 +15,34 @@ final readonly class ValidateDeploymentConfig
         if ($this->hasEnvironmentConfig()) {
             $config = $this->getConfigFromEnvironment();
         } elseif (file_exists($configPath)) {
-            $config = require $configPath;
+            $config = $this->applyServerEnvironmentOverrides(require $configPath);
         } else {
             $config = config('deploy');
         }
 
         return DeploymentConfig::fromArray($config);
+    }
+
+    /**
+     * DEPLOY_HOST, DEPLOY_PORT, DEPLOY_USERNAME, DEPLOY_KEY_PATH and DEPLOY_TIMEOUT take precedence over
+     * the project config's server block, without discarding the rest of the project config.
+     *
+     * @param  array<string, mixed>  $config
+     * @return array<string, mixed>
+     */
+    private function applyServerEnvironmentOverrides(array $config): array
+    {
+        $overrides = array_filter([
+            'host' => getenv('DEPLOY_HOST') ?: null,
+            'port' => getenv('DEPLOY_PORT') ? (int) getenv('DEPLOY_PORT') : null,
+            'username' => getenv('DEPLOY_USERNAME') ?: null,
+            'key_path' => getenv('DEPLOY_KEY_PATH') ?: null,
+            'timeout' => getenv('DEPLOY_TIMEOUT') ? (int) getenv('DEPLOY_TIMEOUT') : null,
+        ], fn (string|int|null $value): bool => $value !== null);
+
+        $config['server'] = array_merge($config['server'] ?? [], $overrides);
+
+        return $config;
     }
 
     private function hasEnvironmentConfig(): bool

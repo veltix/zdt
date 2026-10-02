@@ -21,10 +21,16 @@ final class PhpseclibSshConnection implements SshConnectionContract
     private ?SFTP $sftp = null;
 
     public function __construct(
-        private readonly ServerCredentials $credentials,
+        private ServerCredentials $credentials,
         private readonly LoggerInterface $logger,
         private readonly PhpseclibClientFactoryContract $factory = new PhpseclibFactories\PhpseclibClientFactory(),
     ) {}
+
+    public function useCredentials(ServerCredentials $credentials): void
+    {
+        $this->disconnect();
+        $this->credentials = $credentials;
+    }
 
     public function connect(): void
     {
