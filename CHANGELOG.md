@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-10-03
+
+### Fixed
+- The repository is cloned at the configured branch (`git clone --branch`). Before, the default branch was cloned and `after_clone` hooks ran against it, because the configured branch was only checked out later.
+
 ## [1.0.5] - 2026-10-03
 
 ### Fixed
