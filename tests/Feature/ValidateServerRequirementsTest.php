@@ -36,7 +36,7 @@ test('validates all server requirements successfully', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -70,7 +70,7 @@ test('throws exception when disk space is insufficient', function () {
         new CommandResult(0, "400M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -96,7 +96,7 @@ test('throws exception when disk space check fails', function () {
         new CommandResult(1, 'error', 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -122,7 +122,7 @@ test('throws exception when permissions check fails', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(1, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -148,7 +148,7 @@ test('throws exception when PHP version is too old', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -174,7 +174,7 @@ test('throws exception when PHP check fails', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -200,7 +200,7 @@ test('throws exception when git is not available', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -226,7 +226,7 @@ test('throws exception when composer is not available', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -264,7 +264,7 @@ test('skips composer check when not needed', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -288,7 +288,7 @@ test('logs debug information for disk space', function () {
         new CommandResult(0, "1500M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -315,7 +315,7 @@ test('logs debug information for PHP version', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -342,7 +342,7 @@ test('accepts PHP version exactly at minimum', function () {
         new CommandResult(0, "1000M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -370,7 +370,7 @@ test('accepts disk space exactly at minimum', function () {
         new CommandResult(0, "500M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(0, '', 'test')
     );
     $this->ssh->setCommandResult(
@@ -398,7 +398,7 @@ test('throws exception with multiple failed checks', function () {
         new CommandResult(0, "400M\n", 'df')
     );
     $this->ssh->setCommandResult(
-        'test -d /var/www && test -w /var/www',
+        'test -w /var/www/app || { test ! -e /var/www/app && test -d /var/www && test -w /var/www; }',
         new CommandResult(1, '', 'test')
     );
     $this->ssh->setCommandResult(

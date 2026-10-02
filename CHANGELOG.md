@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-10-03
+
+### Fixed
+- SSH now connects with the loaded deployment config's server settings. Before, `deploy.php`'s `server` block was ignored and only `DEPLOY_*` variables or the bundled defaults (`~/.ssh/id_rsa`) were used.
+- `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USERNAME`, `DEPLOY_KEY_PATH` and `DEPLOY_TIMEOUT` override a project config's `server` block instead of being ignored.
+- The server permission check tests the deploy path itself and only falls back to its parent when the path does not exist yet. A deploy user owning `/var/www/app` inside a root-owned `/var/www` no longer fails with "permissions".
+- Database backups run with `set -o pipefail`, so a failing `pg_dump`/`mysqldump` fails the backup instead of leaving an empty `.sql.gz`.
+
 ## [1.0.1] - 2025-12-08
 
 ### Changed

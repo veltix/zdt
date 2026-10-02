@@ -67,7 +67,7 @@ final readonly class ValidateServerRequirements
         $parentPath = dirname($path);
 
         $result = $this->executor->execute(
-            "test -d {$parentPath} && test -w {$parentPath}",
+            "test -w {$path} || { test ! -e {$path} && test -d {$parentPath} && test -w {$parentPath}; }",
             throwOnError: false
         );
 

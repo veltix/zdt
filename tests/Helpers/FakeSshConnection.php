@@ -34,11 +34,18 @@ final class FakeSshConnection implements SshConnectionContract
 
     public bool $failsUpload = false;
 
+    public ?ServerCredentials $usedCredentials = null;
+
     private bool $connected = false;
 
     public function __construct(
         private readonly ?ServerCredentials $credentials = null,
     ) {}
+
+    public function useCredentials(ServerCredentials $credentials): void
+    {
+        $this->usedCredentials = $credentials;
+    }
 
     public function connect(): void
     {

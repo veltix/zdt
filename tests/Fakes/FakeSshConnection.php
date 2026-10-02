@@ -6,6 +6,7 @@ namespace Tests\Fakes;
 
 use App\Contracts\SshConnectionContract;
 use App\ValueObjects\CommandResult;
+use App\ValueObjects\ServerCredentials;
 use RuntimeException;
 use Throwable;
 
@@ -26,6 +27,13 @@ final class FakeSshConnection implements SshConnectionContract
     public bool $connected = false;
 
     public bool $failOnConnect = false;
+
+    public ?ServerCredentials $usedCredentials = null;
+
+    public function useCredentials(ServerCredentials $credentials): void
+    {
+        $this->usedCredentials = $credentials;
+    }
 
     public function connect(): void
     {

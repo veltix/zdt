@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace App\Contracts;
 
 use App\ValueObjects\CommandResult;
+use App\ValueObjects\ServerCredentials;
 
 interface SshConnectionContract
 {
+    /**
+     * Replace the credentials used by the next connect() call.
+     */
+    public function useCredentials(ServerCredentials $credentials): void;
+
     public function connect(): void;
 
     public function disconnect(): void;

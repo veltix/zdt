@@ -35,6 +35,7 @@ test('cleanup command accepts keep option', function () {
 });
 test('cleanup command executes successfully', function () {
     $sshMock = Mockery::mock(SshConnectionContract::class);
+    $sshMock->shouldReceive('useCredentials')->once();
     $sshMock->shouldReceive('connect')->once();
     $sshMock->shouldReceive('disconnect')->once();
 

@@ -17,6 +17,8 @@ final readonly class EstablishSshConnection
 
     public function handle(SshConnectionContract $ssh, DeploymentConfig $config): void
     {
+        $ssh->useCredentials($config->getServerCredentials());
+
         $maxAttempts = 3;
         $attempt = 0;
 
