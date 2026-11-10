@@ -39,10 +39,11 @@ final readonly class ValidateNewRelease
             }
         }
 
-        // Optional: Run php artisan config:check if available
+        // Optional: run php artisan config:check where the application defines it; calling a command
+        // that does not exist makes Laravel log a CommandNotFoundException into the app's error log
         $this->executor->executeInDirectory(
             $release->path,
-            'php artisan config:check',
+            "php artisan list --raw 2>/dev/null | grep -qE '^config:check( |\$)' && php artisan config:check",
             throwOnError: false
         );
 

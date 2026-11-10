@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-11-10
+
+### Fixed
+- Release validation runs `php artisan config:check` only when the application defines that command. Before, it always ran it, and on an application without it Laravel logged a `CommandNotFoundException` into the app's error log on every deploy.
+
 ## [1.0.6] - 2026-10-03
 
 ### Fixed
