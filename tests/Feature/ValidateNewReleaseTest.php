@@ -255,3 +255,38 @@ test('validate new release throws exception when vendor directory missing', func
     expect(fn () => $action->handle($config, $this->release))
         ->toThrow(HealthCheckFailedException::class, 'Composer dependencies not installed');
 });
+
+test('validate new release runs config:check only when the application defines it', function () {
+    $sshMock = SshMockHelper::mockConnection();
+    $commands = [];
+
+    $sshMock->shouldReceive('execute')
+        ->andReturnUsing(function ($command) use (&$commands) {
+            $commands[] = $command;
+
+            return new CommandResult(0, '', $command);
+        });
+
+    $executor = new RemoteExecutor($sshMock, $this->logger);
+    $action = new ValidateNewRelease($executor, $this->logger);
+
+    $config = new DeploymentConfig(
+        server: ['host' => 'test.com', 'username' => 'user'],
+        repository: ['url' => 'https://github.com/test/repo.git', 'branch' => 'main'],
+        paths: ['deploy_to' => '/var/www/app'],
+        options: [],
+        hooks: [],
+        healthCheck: [],
+        sharedPaths: [],
+        database: [],
+        notifications: [],
+    );
+
+    $action->handle($config, $this->release);
+
+    $configCheck = array_values(array_filter($commands, fn (string $command): bool => str_contains($command, 'config:check')));
+
+    expect($configCheck)->toHaveCount(1)
+        ->and($configCheck[0])->toContain('php artisan list --raw')
+        ->and(mb_strpos($configCheck[0], 'php artisan list --raw'))->toBeLessThan(mb_strpos($configCheck[0], '&& php artisan config:check'));
+});
